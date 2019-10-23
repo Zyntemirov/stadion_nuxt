@@ -69,7 +69,7 @@
                                 if (firebaseUser.user){
                                     this.login(firebaseUser);
                                     this.$uikit.notification.closeAll();
-                                    this.$router.push('/protected')
+                                    this.$router.push('/dashboard')
                                 }
                             });
 

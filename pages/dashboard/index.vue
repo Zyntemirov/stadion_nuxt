@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <div class="content">
     <div>
       Protected page --- only authenticated users can see this
     </div>
@@ -13,7 +13,7 @@
         All DB Users: {{ allusers }}
       </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
