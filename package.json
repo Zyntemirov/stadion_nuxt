@@ -1,0 +1,53 @@
+{
+  "name": "nuxt-ssr-firebase-auth-v2",
+  "version": "1.0.0",
+  "description": "Nuxt.js and Firebase Authentication Example Application",
+  "author": "David Royer",
+  "private": true,
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "lint": "eslint --ext .js,.vue --ignore-path .gitignore .",
+    "precommit": "npm run lint",
+    "deploy:now": "now --public && now alias"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "latest",
+    "body-parser": "latest",
+    "cookieparser": "latest",
+    "core-js": "^2.0.0",
+    "express": "latest",
+    "express-session": "latest",
+    "firebase": "latest",
+    "js-cookie": "latest",
+    "jwt-decode": "latest",
+    "node-fetch": "^2.5.0",
+    "nuxt": "latest",
+    "uikit": "^3.1.4",
+    "vue": "^2.6.10"
+  },
+  "devDependencies": {
+    "@nuxtjs/eslint-config": "^0.0.1",
+    "babel-eslint": "^8.2.1",
+    "eslint": "^5.0.1",
+    "eslint-config-prettier": "^3.1.0",
+    "eslint-config-standard": ">=12.0.0",
+    "eslint-loader": "^2.0.0",
+    "eslint-plugin-import": ">=2.14.0",
+    "eslint-plugin-jest": ">=21.24.1",
+    "eslint-plugin-node": ">=7.0.1",
+    "eslint-plugin-nuxt": ">=0.4.2",
+    "eslint-plugin-prettier": "2.6.2",
+    "eslint-plugin-promise": ">=4.0.1",
+    "eslint-plugin-standard": ">=4.0.0",
+    "eslint-plugin-vue": "^5.0.0",
+    "nodemon": "^1.18.9",
+    "prettier": "1.14.3"
+  },
+  "now": {
+    "name": "nuxt-fireauth-v5",
+    "alias": "nuxt-fireauth-v5.now.sh"
+  }
+}
