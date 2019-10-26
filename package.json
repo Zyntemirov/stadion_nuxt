@@ -26,7 +26,8 @@
     "node-fetch": "^2.5.0",
     "nuxt": "latest",
     "uikit": "^3.1.4",
-    "vue": "^2.6.10"
+    "vue": "^2.6.10",
+    "vue2-timepicker": "^1.0.3"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^0.0.1",

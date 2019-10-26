@@ -9,7 +9,7 @@ export const actions = {
     }
 
     return Promise.all([
-      dispatch('stadiums/initStore', user),
+      dispatch('stadiums/initStore'),
     ])
   }
 }

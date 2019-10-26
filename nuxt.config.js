@@ -11,16 +11,16 @@ module.exports = {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css?family=Roboto:300,300italic,700,700italic' },
-      { rel: 'stylesheet', href: 'https://cdn.rawgit.com/necolas/normalize.css/master/normalize.css' },
-      { rel: 'stylesheet', href: 'https://cdn.rawgit.com/milligram/milligram/master/dist/milligram.min.css' }
+    ],
+    script: [
+      { src: 'https://api-maps.yandex.ru/2.1.8/?apikey=9312f419-42d1-482d-8a79-ba77054ed952&lang=ru_RU' },
     ]
   },
 
   /*
   ** Customize the progress bar color
   */
-  loading: { color: '#3B8070' },
+  loading: { color: '#800e00' },
   /*
   ** Build configuration
   */

@@ -19,7 +19,7 @@
     export default {
         data () {
             return {
-                number: '',
+                number: '+996',
                 appVerifier : '',
             }
         },
@@ -67,9 +67,10 @@
                             })
                             .finally(() =>{
                                 if (firebaseUser.user){
-                                    this.login(firebaseUser);
-                                    this.$uikit.notification.closeAll();
-                                    this.$router.push('/dashboard')
+                                    this.login(firebaseUser.user).then(() =>{
+                                        this.$uikit.notification.closeAll();
+                                        window.location.reload();
+                                    });
                                 }
                             });
 
@@ -119,8 +120,10 @@
   button {
     background-color: #4CAF50;
     color: white;
+    padding: 14px 20px;
     margin: 8px 0;
     border: none;
+    border-radius: 30px;
     cursor: pointer;
     width: 100%;
   }
@@ -133,6 +136,8 @@
     padding: 16px;
     max-width: 400px;
   }
+
+
 
 </style>
 
