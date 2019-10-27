@@ -35,7 +35,7 @@ export const actions = {
     let stadiumId = await firebase.database().ref('stadiums/').push().key;
     let filterBy = "", check = 0;
 
-    await Promise.all(Object.keys(data.files).map(async key =>{
+    await Promise.all(Object.keys(data.files).map(async key => {
       let storageRef = await firebase.storage().ref().child('stadium/' + stadiumId + '/' + data.files[key].name);
 
       await storageRef.put(data.files[key])
@@ -61,24 +61,40 @@ export const actions = {
       dispatch('initStore');
     });
   },
-  // update({commit, state, dispatch}, {id, active}) {
-  //   firestore.collection('stadiums')
-  //     .doc(id)
-  //     .update({
-  //       active: active
-  //     })
-  //     .then(() => {
-  //       dispatch('initStore')
-  //     })
-  // },
+  update({commit, state, dispatch}, id) {
+    firebase.database('stadiums/' + id)
+      .update(form)
+      .then(() => {
+        dispatch('initStore')
+      })
+  },
   delete({commit, state, dispatch}, {id}) {
     firebase.database().ref('stadiums/' + id).remove()
       .then(() => {
         console.log('successfully removed')
         dispatch('initStore');
       })
-      .catch((error) =>{
+      .catch((error) => {
         console.log('Удалить не удалось: ' + error.message);
       });
+  },
+  async deleteOneImg({commit, state, dispatch}, data) {
+    let stadium = Object.assign({},state.list[data.id]);
+    let images = [];
+    await stadium.imgNames.forEach(img =>{
+      if (data.name !== img){
+        images.push(img);
+      }
+    });
+
+    stadium['imgNames'] = images;
+
+    firebase.database().ref('stadiums/' + data.id + '/imgNames/' + data.index)
+      .remove()
+      .then(function () {
+        console.log('successfully removed one image');
+      }).catch(function (error) {
+      console.log('Удалить не удалось: ' + error.message);
+    });
   }
 };

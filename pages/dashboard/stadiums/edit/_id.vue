@@ -2,11 +2,11 @@
   <div class="content">
     <div class="card">
       <div class="card-header text-center">
-        <h4 class="m-0">Добавить новый стадион</h4>
+        <h4 class="m-0">Редактировать</h4>
       </div>
       <div class="card-body">
         <div id="map" style="width: 100%; height: 400px"></div>
-
+        {{form}}
         <form @submit.prevent="handleSubmit">
           <h3 class="card-title" align="center">Заполните все поля </h3>
           <div class="form-group row">
@@ -16,6 +16,7 @@
                      placeholder="Сантьяго Бернабеу" required>
             </div>
           </div>
+
           <div class="form-group row">
             <label class="col-sm-2 text-right control-label col-form-label">Цена</label>
             <div class="col-sm-9">
@@ -25,6 +26,7 @@
                      placeholder="1000" required>
             </div>
           </div>
+
           <div class="form-group row">
             <label class="col-sm-2 text-right control-label col-form-label">Полный
               адрес</label>
@@ -67,33 +69,33 @@
             <div class="col-sm-9">
               <div class="custom-control custom-checkbox mr-sm-2">
                 <input type="checkbox" class="custom-control-input" v-model="form.infrastructure.ceiling"
-                       id="stadium_ceiling">
-                <label class="custom-control-label" for="stadium_ceiling">Крыша</label>
+                       id="stadium_ceiling_edit">
+                <label class="custom-control-label" for="stadium_ceiling_edit">Крыша</label>
               </div>
               <div class="custom-control custom-checkbox mr-sm-2">
                 <input type="checkbox" class="custom-control-input" v-model="form.infrastructure.dressing_room"
-                       id="stadium_dressing_room">
-                <label class="custom-control-label" for="stadium_dressing_room">Раздевалки</label>
+                       id="stadium_dressing_room_edit">
+                <label class="custom-control-label" for="stadium_dressing_room_edit">Раздевалки</label>
               </div>
               <div class="custom-control custom-checkbox mr-sm-2">
                 <input type="checkbox" class="custom-control-input" v-model="form.infrastructure.lighting"
-                       id="stadium_lighting">
-                <label class="custom-control-label" for="stadium_lighting">Освещение</label>
+                       id="stadium_lighting_edit_edit">
+                <label class="custom-control-label" for="stadium_lighting_edit_edit">Освещение</label>
               </div>
               <div class="custom-control custom-checkbox mr-sm-2">
                 <input type="checkbox" class="custom-control-input" v-model="form.infrastructure.shower"
-                       id="stadium_shower">
-                <label class="custom-control-label" for="stadium_shower">Душ</label>
+                       id="stadium_shower_edit">
+                <label class="custom-control-label" for="stadium_shower_edit">Душ</label>
               </div>
               <div class="custom-control custom-checkbox mr-sm-2">
                 <input type="checkbox" class="custom-control-input" v-model="form.infrastructure.tribune"
-                       id="stadium_tribune">
-                <label class="custom-control-label" for="stadium_tribune">Трибуна</label>
+                       id="stadium_tribune_edit">
+                <label class="custom-control-label" for="stadium_tribune_edit">Трибуна</label>
               </div>
               <div class="custom-control custom-checkbox mr-sm-2">
                 <input type="checkbox" class="custom-control-input" v-model="form.infrastructure.parking"
-                       id="stadium_parking">
-                <label class="custom-control-label" for="stadium_parking">Парковка</label>
+                       id="stadium_parking_edit">
+                <label class="custom-control-label" for="stadium_parking_edit">Парковка</label>
               </div>
             </div>
           </div>
@@ -103,7 +105,19 @@
             <div class="col-sm-9">
               <div>
                 <input type="file" @change="uploadImage" multiple
-                       accept="image/*" required>
+                       accept="image/*">
+              </div>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-2">
+            </div>
+            <div class="col-sm-9">
+              <div v-for="(image, key) in imgNames" class="image_choose" v-bind:key="image">
+                <div v-if="image">
+                  <span class="close_icon fa fa-close fa-2x" @click="delImg({id:form.stadiumId, index: key, name:image})"></span>
+                  <img :src="'https://firebasestorage.googleapis.com/v0/b/stadion-e9852.appspot.com/o/stadium%2F'+ form.stadiumId + '%2Fthumb_small_' + image + '?alt=media'" class="img-thumbnail pic">
+                </div>
               </div>
               <img v-for="img in images" v-bind:key="img" :src="img" class="pic">
             </div>
@@ -113,7 +127,7 @@
             <label class="col-sm-2 text-right control-label col-form-label">Описание</label>
             <div class="col-sm-9">
                   <textarea class="form-control" v-model="form.description" placeholder="Напишите....." rows="3"
-                            id="stadium_description" required></textarea>
+                            id="stadium_description_edit" required></textarea>
             </div>
           </div>
 
@@ -133,45 +147,46 @@
     import VueTimepicker from 'vue2-timepicker/src/vue-timepicker.vue'
 
     export default {
-        name: "new",
+        name: "edit",
         components: {VueTimepicker},
-        data() {
+        data(){
+          return {
+              images: [],
+              fileObject: {},
+          }
+        },
+        asyncData({params, store}) {
+            let form = Object.assign({},store.state.stadiums.list[params.id]);
             return {
-                form: {
-                    name: '',
-                    price: '',
-                    address: '',
-                    description: '',
-                    open_time: '08:00',
-                    close_time: '23:00',
-                    imgNames: [],
-                    filterByInfrastructure: '',
-                    infrastructure: {
-                        ceiling: false,
-                        dressing_room: true,
-                        lighting: true,
-                        parking: false,
-                        shower: false,
-                        tribune: false,
-                    },
-                    latitude: '',
-                    longitude: '',
-                    type: 'Мини',
-                    userId: '',
-                    stadiumId: ''
-                },
-                images: [],
-                submitted: '',
-                fileObject: {}
+                form,
+                imgNames: Object.assign([], form.imgNames),
             }
+
         },
         methods: {
             ...mapActions({
-                addStadium: 'stadiums/add',
+                updateClient: 'stadiums/update',
+                delImage: 'stadiums/deleteOneImg'
             }),
-            uploadImage(e) {
+            delImg(data){
+                if (confirm("вы уверены ?")) {
+                     this.delImage(data)
+                      .then(() => {
+                          this.$uikit.notification({
+                              message: 'Успешно удалено!',
+                              status: 'success',
+                              pos: 'top-center',
+                              timeout: 2000
+                          });
+                          this.imgNames.splice(data.index,1);
+                      })
+                      .catch((error) =>{
+                          console.log('Удалить не удалось: ' + error.message);
+                      });
+                }
+            },
+            uploadImage(e){
                 this.images = [];
-                this.form.imgNames = [];
                 let curFiles = e.target.files;
                 this.fileObject = e.target.files;
                 if (curFiles.length > 4) {
@@ -184,28 +199,18 @@
                     return
                 }
                 for (let i = 0; i < curFiles.length; i++) {
-                    this.form.imgNames.push(curFiles[i].name);
                     this.images.push(URL.createObjectURL(curFiles[i]))
                 }
             },
-            async handleSubmit(e) {
-                this.submitted = true;
-
-                if (this.form.longitude === '') {
-                    this.$uikit.notification({
-                        message: 'Измените адрес на карте!',
-                        status: 'warning',
-                        pos: 'top-right',
-                        timeout: 2000
-                    });
-                } else if (this.form.open_time === '' || this.form.close_time === '') {
+            handleSubmit() {
+                if (this.form.open_time === '' || this.form.close_time === '') {
                     this.$uikit.notification({
                         message: 'Заполните время!',
                         status: 'warning',
                         pos: 'top-right',
                         timeout: 2000
                     });
-                } else if (this.form.imgNames.length === 0) {
+                } else if (this.imgNames.length === 0) {
                     this.$uikit.notification({
                         message: 'Выберите фотографий!',
                         status: 'warning',
@@ -213,19 +218,14 @@
                         timeout: 2000
                     });
                 } else {
-                    this.$uikit.notification({
-                        message: 'Подождите!',
-                        status: 'success',
-                        pos: 'top-center',
-                        timeout: 7000
-                    });
-                    this.addStadium({form: this.form, files: this.fileObject}).then(() => {
+                    this.update({form: this.form, files:this.images}).then(() => {
                         this.$uikit.notification({
-                            message: 'Успешно добавлено!',
+                            message: 'Успешно обновлено!',
                             status: 'success',
                             pos: 'top-center',
                             timeout: 2000
                         });
+
                         this.$router.push('/dashboard/stadiums')
                     })
                 }
@@ -262,10 +262,6 @@
                             hintContent: 'Наш адрес',
                         }, {
                             iconLayout: 'default#image',
-                            // iconImageClipRect: [[34,0], [62, 46]],
-                            // iconImageHref: '{{ asset('public/img/marker-new.png') }}',
-                            // iconImageSize: [40, 43],
-                            // iconImageOffset: [-20, -50],
                         });
 
                         form.latitude = coords[0].toPrecision(8);
@@ -274,7 +270,7 @@
                     }
                 });
 
-                marker = new ymaps.Placemark([42.856751, 74.588584], {
+                marker = new ymaps.Placemark([form.latitude, form.longitude], {
                     balloonContent: 'Наш адрес',
                     hintContent: 'Наш адрес',
                 }, {
@@ -285,6 +281,7 @@
             }
         }
     }
+
 </script>
 
 <style scoped>
@@ -292,9 +289,31 @@
     border-top: none;
   }
 
+  .image_choose{
+    display: inline-block;
+    position: relative;
+  }
+  .pic {
+    width: 8em;
+    height: 8em;
+    object-fit: cover;
+  }
+  .close_icon{
+    background: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 500px;
+    position: absolute;
+    top: 50%;
+    color: white;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+  }
+
   .pic {
     width: 12em;
     height: 9em;
     object-fit: cover;
   }
+
 </style>
