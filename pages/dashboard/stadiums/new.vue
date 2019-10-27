@@ -112,7 +112,7 @@
           <div class="form-group row">
             <label class="col-sm-2 text-right control-label col-form-label">Описание</label>
             <div class="col-sm-9">
-                  <textarea class="form-control" v-model="form.description" placeholder="Напишите....." rows="3"
+                  <textarea class="form-control" v-model="form.description" placeholder="Напишите....." rows="5"
                             id="stadium_description" required></textarea>
             </div>
           </div>

@@ -129,7 +129,7 @@
           <div class="form-group row">
             <label class="col-sm-2 text-right control-label col-form-label">Описание</label>
             <div class="col-sm-9">
-                    <textarea class="form-control" v-model="form.description" placeholder="Напишите....." rows="3"
+                    <textarea class="form-control" v-model="form.description" placeholder="Напишите....." rows="5"
                               id="stadium_description_edit" required></textarea>
             </div>
           </div>
@@ -182,7 +182,7 @@
                 delImage: 'stadiums/deleteOneImg'
             }),
             delImg(data) {
-                if (confirm("вы уверены ?")) {
+                if (confirm("Вы действительно хотите удалить " + data.name + "?")) {
                     if (this.imgNames.length > 1) {
                         this.delImage(data)
                             .then(() => {
