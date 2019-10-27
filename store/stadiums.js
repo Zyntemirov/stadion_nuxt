@@ -79,16 +79,6 @@ export const actions = {
       });
   },
   async deleteOneImg({commit, state, dispatch}, data) {
-    let stadium = Object.assign({},state.list[data.id]);
-    let images = [];
-    await stadium.imgNames.forEach(img =>{
-      if (data.name !== img){
-        images.push(img);
-      }
-    });
-
-    stadium['imgNames'] = images;
-
     firebase.database().ref('stadiums/' + data.id + '/imgNames/' + data.index)
       .remove()
       .then(function () {
