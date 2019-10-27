@@ -25,8 +25,9 @@
         layout: 'dashboard',
         name: "stadiums",
         computed: {
-            ...mapGetters({stadiums: 'stadiums/stadiums'})
+            ...mapGetters({stadiums: 'stadiums/stadiums'}),
         },
+
         methods: {
             ...mapActions({
                 del: 'stadiums/delete'

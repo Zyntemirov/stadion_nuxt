@@ -25,7 +25,13 @@ export const actions = {
         .once('value', (snapshot) => {
           let tempObject = {};
           snapshot.forEach((childSnapshot) => {
-            tempObject[childSnapshot.val().stadiumId] = childSnapshot.val();
+            let stadium = childSnapshot.val();
+
+            let image = Object.assign([], stadium.imgNames);
+            image = image.filter(e => typeof e === 'string' && e)
+
+            stadium['imgNames'] = image;
+            tempObject[stadium.stadiumId] = stadium;
           });
           commit('SET_STADIUMS', tempObject)
         })
@@ -61,12 +67,30 @@ export const actions = {
       dispatch('initStore');
     });
   },
-  update({commit, state, dispatch}, id) {
-    firebase.database('stadiums/' + id)
-      .update(form)
+  async update({commit, state, dispatch}, data) {
+    let imgNames = [];
+    await Promise.all(Object.keys(data.files).map(async key => {
+      let storageRef = await firebase.storage().ref().child('stadium/' + data.form.stadiumId + '/' + data.files[key].name);
+      imgNames.push(data.files[key].name);
+      await storageRef.put(data.files[key])
+        .then(snapshot => snapshot.ref.getDownloadURL())
+        .then((url) => {
+          console.log(url);
+        })
+        .catch(console.error);
+    }));
+
+    if (imgNames.length !== 0){
+      let imgs = data.form.imgNames.concat(imgNames);
+      data.form['imgNames'] = imgs;
+    }
+
+    await firebase.database().ref('stadiums/' + data.form.stadiumId)
+      .update(data.form)
       .then(() => {
-        dispatch('initStore')
+        dispatch('initStore');
       })
+      .catch(console.error);
   },
   delete({commit, state, dispatch}, {id}) {
     firebase.database().ref('stadiums/' + id).remove()
@@ -79,7 +103,7 @@ export const actions = {
       });
   },
   async deleteOneImg({commit, state, dispatch}, data) {
-    firebase.database().ref('stadiums/' + data.id + '/imgNames/' + data.index)
+    await firebase.database().ref('stadiums/' + data.id + '/imgNames/' + data.index)
       .remove()
       .then(function () {
         console.log('successfully removed one image');

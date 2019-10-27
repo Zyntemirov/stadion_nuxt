@@ -6,7 +6,6 @@
       </div>
       <div class="card-body">
         <div id="map" style="width: 100%; height: 400px"></div>
-        {{form}}
         <form @submit.prevent="handleSubmit">
           <h3 class="card-title" align="center">Заполните все поля </h3>
           <div class="form-group row">
@@ -115,8 +114,12 @@
             <div class="col-sm-9">
               <div v-for="(image, key) in imgNames" class="image_choose" v-bind:key="image">
                 <div v-if="image">
-                  <span class="close_icon fa fa-close fa-2x" @click="delImg({id:form.stadiumId, index: key, name:image})"></span>
-                  <img :src="'https://firebasestorage.googleapis.com/v0/b/stadion-e9852.appspot.com/o/stadium%2F'+ form.stadiumId + '%2Fthumb_small_' + image + '?alt=media'" class="img-thumbnail pic">
+                  {{ image.key }}
+                  <span class="close_icon fa fa-close fa-2x"
+                        @click="delImg({id:form.stadiumId, index: key, name:image})"></span>
+                  <img
+                    :src="'https://firebasestorage.googleapis.com/v0/b/stadion-e9852.appspot.com/o/stadium%2F'+ form.stadiumId + '%2Fthumb_small_' + image + '?alt=media'"
+                    class="img-thumbnail pic">
                 </div>
               </div>
               <img v-for="img in images" v-bind:key="img" :src="img" class="pic">
@@ -126,8 +129,8 @@
           <div class="form-group row">
             <label class="col-sm-2 text-right control-label col-form-label">Описание</label>
             <div class="col-sm-9">
-                  <textarea class="form-control" v-model="form.description" placeholder="Напишите....." rows="3"
-                            id="stadium_description_edit" required></textarea>
+                    <textarea class="form-control" v-model="form.description" placeholder="Напишите....." rows="3"
+                              id="stadium_description_edit" required></textarea>
             </div>
           </div>
 
@@ -145,64 +148,88 @@
 <script>
     import {mapActions} from "vuex";
     import VueTimepicker from 'vue2-timepicker/src/vue-timepicker.vue'
+    import firebase from 'firebase/app'
 
     export default {
         name: "edit",
         components: {VueTimepicker},
-        data(){
-          return {
-              images: [],
-              fileObject: {},
-          }
+        data() {
+            return {
+                images: [],
+                fileObject: {},
+            }
         },
-        asyncData({params, store}) {
-            let form = Object.assign({},store.state.stadiums.list[params.id]);
+        async asyncData({params, store}) {
+            let form =await firebase.database().ref("stadiums")
+                .child(params.id)
+                .once("value")
+                .then(snapshot => {
+                    return snapshot.val();
+                })
+                .catch(error => ({
+                    errorCode: error.code,
+                    errorMessage: error.message
+                }));
             return {
                 form,
-                imgNames: Object.assign([], form.imgNames),
+                imgNames: form.imgNames.concat([]),
             }
 
         },
         methods: {
             ...mapActions({
-                updateClient: 'stadiums/update',
+                updateStadium: 'stadiums/update',
                 delImage: 'stadiums/deleteOneImg'
             }),
-            delImg(data){
+            delImg(data) {
                 if (confirm("вы уверены ?")) {
-                     this.delImage(data)
-                      .then(() => {
-                          this.$uikit.notification({
-                              message: 'Успешно удалено!',
-                              status: 'success',
-                              pos: 'top-center',
-                              timeout: 2000
-                          });
-                          this.imgNames.splice(data.index,1);
-                      })
-                      .catch((error) =>{
-                          console.log('Удалить не удалось: ' + error.message);
-                      });
+                    if (this.imgNames.length > 1) {
+                        this.delImage(data)
+                            .then(() => {
+                                this.$uikit.notification({
+                                    message: 'Успешно удалено!',
+                                    status: 'success',
+                                    pos: 'top-center',
+                                    timeout: 2000
+                                });
+                                this.imgNames.splice(data.index, 1);
+                            })
+                            .catch((error) => {
+                                console.log('Удалить не удалось: ' + error.message);
+                            });
+                    } else {
+                        this.$uikit.notification({
+                            message: 'Вы не можете удалить!',
+                            status: 'warning',
+                            pos: 'top-right',
+                            timeout: 2000
+                        });
+                    }
                 }
             },
-            uploadImage(e){
+            uploadImage(e) {
+                let imgs = this.imgNames.filter(e => typeof e === 'string' && e)
                 this.images = [];
                 let curFiles = e.target.files;
-                this.fileObject = e.target.files;
-                if (curFiles.length > 4) {
+                if (curFiles.length + imgs.length > 4) {
                     this.$uikit.notification({
                         message: 'Вы можете загрузить максимум 4 фото!',
                         status: 'warning',
                         pos: 'top-right',
                         timeout: 2000
                     });
-                    return
                 }
-                for (let i = 0; i < curFiles.length; i++) {
-                    this.images.push(URL.createObjectURL(curFiles[i]))
+                else {
+                    this.fileObject = e.target.files;
+                    for (let i = 0; i < curFiles.length; i++) {
+                        this.images.push(URL.createObjectURL(curFiles[i]))
+                    }
                 }
+
             },
             handleSubmit() {
+                let imgs = this.imgNames.filter(e => typeof e === 'string' && e)
+
                 if (this.form.open_time === '' || this.form.close_time === '') {
                     this.$uikit.notification({
                         message: 'Заполните время!',
@@ -210,7 +237,7 @@
                         pos: 'top-right',
                         timeout: 2000
                     });
-                } else if (this.imgNames.length === 0) {
+                } else if (imgs.length + this.images.length=== 0) {
                     this.$uikit.notification({
                         message: 'Выберите фотографий!',
                         status: 'warning',
@@ -218,7 +245,7 @@
                         timeout: 2000
                     });
                 } else {
-                    this.update({form: this.form, files:this.images}).then(() => {
+                    this.updateStadium({form: this.form, files: this.fileObject}).then(() => {
                         this.$uikit.notification({
                             message: 'Успешно обновлено!',
                             status: 'success',
@@ -289,16 +316,18 @@
     border-top: none;
   }
 
-  .image_choose{
+  .image_choose {
     display: inline-block;
     position: relative;
   }
+
   .pic {
     width: 8em;
     height: 8em;
     object-fit: cover;
   }
-  .close_icon{
+
+  .close_icon {
     background: rgba(0, 0, 0, 0.5);
     padding: 5px 10px;
     border-radius: 500px;
