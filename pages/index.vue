@@ -2,8 +2,11 @@
   <section class="container">
     <div>
       <form @submit.prevent="signUp">
-        <label for="usernameTxt">Phone number:</label>
-        <input id="usernameTxt" type="text" v-model="number">
+        <label for="usernameTxt">Телефон номер:</label>
+        <input id="usernameTxt" type="text" v-model="number"
+               onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+               maxlength="13"
+        >
         <div id="recaptcha-container"></div><br>
         <button type="submit">Sign Up</button>
       </form>
@@ -66,10 +69,10 @@
                                 });
                             })
                             .finally(() =>{
-                                if (firebaseUser.user){
-                                    this.login(firebaseUser.user).then(() =>{
+                                if (firebaseUser){
+                                    this.login(firebaseUser).then(() =>{
                                         this.$uikit.notification.closeAll();
-                                        window.location.reload();
+                                        // window.location.reload();
                                     });
                                 }
                             });
@@ -132,12 +135,13 @@
     opacity: 0.8;
   }
 
+  label{
+    color: white;
+  }
   .container {
     padding: 16px;
     max-width: 400px;
   }
-
-
 
 </style>
 

@@ -20,13 +20,13 @@ module.exports = {
   /*
   ** Customize the progress bar color
   */
-  loading: { color: '#800e00' },
+  loading: {
+    color: '#ff2f00',
+    height: '3px'
+  },
   /*
   ** Build configuration
   */
-  // css: [
-  //   '@/assets/styles/main.css'
-  // ],
   build: {
     /*
     ** Run ESLint on save

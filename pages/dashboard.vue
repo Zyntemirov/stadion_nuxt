@@ -4,9 +4,9 @@
       <nav class="navbar top-navbar navbar-expand-md">
         <div class="navbar-collapse collapse">
 
-          <a class="navbar-brand" style="background-color: white; margin-left: 50px">
+          <a class="navbar-brand" style="background-color: white;">
             <b class="logo-icon p-l-10">
-              <img style="max-height: 40px" src="../assets/img/logo.png" alt="homepage"
+              <img style="max-height: 30px" src="../assets/img/logo-stadium.png" alt="homepage"
                    class="nav_style"/>
             </b>
           </a>

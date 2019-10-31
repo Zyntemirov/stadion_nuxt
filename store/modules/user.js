@@ -24,9 +24,9 @@ export const getters = {
 
 export const actions = {
 
-  async login({dispatch, state}, user) {
-    console.log('[STORE ACTIONS] - login',user)
-    const token = await firebaseApp.auth().currentUser.getIdToken(true)
+  async login({dispatch, state}, firebaseUser) {
+    let user = firebaseUser.user;
+    let token = await firebaseApp.auth().currentUser.getIdToken(true)
     const userInfo = {
       name: user.name,
       email: user.email,
@@ -57,7 +57,6 @@ export const actions = {
 
   setUSER({commit}, user) {
     commit('setUSER', user)
-
   }
 
 }
