@@ -1,15 +1,15 @@
 <template>
   <div class="content">
     <div class="card-body">
-      <nuxt-link to="/dashboard/stadiums/new" class="btn btn-primary btn-block btn-stadium">Добавить новый стадион</nuxt-link>
-      <div class="row" style="margin-top: 10px">
+      <nuxt-link to="/dashboard/stadiums/new" class="btn btn-primary btn-block btn-stadium" style="width: 200px; margin-left: 10px"><i class="fa fa-plus" style="padding-right:3px; font-size: 25px; text-align: center; vertical-align: middle "></i>  Добавить стадион</nuxt-link>
+      <div class="row" style="margin-top: 25px">
         <div v-for="(stadium, key) in stadiums" :key="key" class="col-sm-3 text-center blocks">
-          <img :src="'https://firebasestorage.googleapis.com/v0/b/stadion-e9852.appspot.com/o/stadium%2F'+ stadium.stadiumId + '%2Fthumb_small_' + stadium.imgNames[0] + '?alt=media'" @error="imageLoadError({stadiumId: stadium.stadiumId, name:stadium.imgNames[0]})" style="max-width: 100%">
+          <img :src="'https://firebasestorage.googleapis.com/v0/b/stadion-e9852.appspot.com/o/stadium%2F'+ stadium.stadiumId + '%2Fthumb_small_' + stadium.imgNames[0] + '?alt=media'" @error="imageLoadError({stadiumId: stadium.stadiumId, name:stadium.imgNames[0]})" class="box-shadow b-r-15" style="max-width: 100%">
           <p v-if="stadium.name.length > 25">{{ stadium.name.slice(0,25)}} ...</p>
           <p v-else>{{ stadium.name }}</p>
-          <nuxt-link class="btn btn-success" :to="'/dashboard/stadiums/edit/'+key"><i class="fa fa-pencil"></i>
+          <nuxt-link class="btn btn-success b-r-9" :to="'/dashboard/stadiums/edit/'+key"><i class="fa fa-pencil"></i>
           </nuxt-link>
-          <a class="btn btn-danger" @click.prevent="removeStadium({id: key, name: stadium.name})"><i class="fa fa-trash"></i></a>
+          <a class="btn btn-danger b-r-9" @click.prevent="removeStadium({id: key, name: stadium.name})"><i class="fa fa-trash"></i></a>
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@
 
 <style scoped>
   p {
-    margin: 1px
+    margin: 7px
   }
 
   img {
@@ -68,6 +68,19 @@
     margin-bottom: 30px;
   }
 
+  .b-r-15 {
+    border-radius: 15px;
+  }
+
+  .b-r-9 {
+    border-radius: 9px;
+  }
+
+  .box-shadow {
+    width: 250px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    text-align: center;
+  }
   /*override style*/
   .btn-danger {
     color: #fff !important;

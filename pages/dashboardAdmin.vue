@@ -4,9 +4,9 @@
       <nav class="navbar top-navbar navbar-expand-md">
         <div class="navbar-collapse collapse">
 
-          <a class="navbar-brand" style="background-color: white;">
+          <a class="navbar-brand">
             <b class="logo-icon p-l-10">
-              <img style="max-height: 30px" src="../assets/img/logo-stadium.png" alt="homepage"
+              <img style="max-height: 30px" src="../assets/img/logo-stadium_final_fixed.png" alt="homepage"
                    class="nav_style"/>
             </b>
           </a>
@@ -15,8 +15,8 @@
           </ul>
 
           <ul class="navbar-nav float-right" style="margin-top: 0px">
-            <div class="uk-inline" style="background-color: white">
-              <button class="uk-button uk-button-default" type="button">Админ</button>
+            <div class="uk-inline">
+              <button class="uk-button uk-button-default" type="button" style="border-radius: 13px; background-color: white">Админ</button>
               <div uk-dropdown="pos: bottom-center">
                 <ul class="uk-nav uk-dropdown-nav">
                   <a class="dropdown-item"><i class="ti-user m-r-5 m-l-5"></i>Мой профиль</a>
@@ -49,6 +49,9 @@
       </ul>
     </aside>
     <nuxt-child/>
+    <footer class="footer text-center">
+      All Rights Reserved by Stadion.kg. Designed and Developed by <a href="https://wrappixel.com">AZ</a>.
+    </footer>
   </div>
 </template>
 
@@ -79,8 +82,13 @@
     color: #000000 !important;
   }
 
-  .nav_style {
-    background-color: white;
-    border-radius: 30px
+  .footer {
+    position: absolute;
+    margin-left: 40%;
+  }
+
+  .topbar {
+    position: fixed;
+    width: 100%;
   }
 </style>
