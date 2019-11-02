@@ -35,6 +35,7 @@ export const actions = {
           })
       }
 
+      await dispatch('modules/user/saveADMIN', databaseUser.admin)
       await dispatch('modules/user/setUSER', { name: databaseUser.name, admin: databaseUser.admin, phone_number: user.phone_number, uid: user.user_id})
     }
 

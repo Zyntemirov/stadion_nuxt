@@ -72,7 +72,7 @@
                                 if (firebaseUser){
                                     this.login(firebaseUser).then(() =>{
                                         this.$uikit.notification.closeAll();
-                                        // window.location.reload();
+                                        window.location.reload();
                                     });
                                 }
                             });

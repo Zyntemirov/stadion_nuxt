@@ -16,7 +16,7 @@
 
           <ul class="navbar-nav float-right" style="margin-top: 0px">
             <div class="uk-inline" style="background-color: white">
-              <button class="uk-button uk-button-default" type="button">Админ</button>
+              <button class="uk-button uk-button-default" type="button">Клиент</button>
               <div uk-dropdown="pos: bottom-center">
                 <ul class="uk-nav uk-dropdown-nav">
                   <a class="dropdown-item"><i class="ti-user m-r-5 m-l-5"></i>Мой профиль</a>
@@ -35,12 +35,7 @@
     <aside class="sidebar">
       <ul class="nav">
         <li>
-          <nuxt-link to="/dashboard" :class="{activelink: this.$route.name === 'dashboard'}">Главная</nuxt-link>
-        </li>
-        <li>
-          <nuxt-link to="/dashboard/stadiums" :class="{activelink: this.$route.name === 'dashboard-stadiums'}">Мои
-            стадины
-          </nuxt-link>
+          <nuxt-link to="/dashboardUser" :class="{activelink: this.$route.name === 'dashboardUser'}">Главная</nuxt-link>
         </li>
         <li><a href="https://stadion.kg/rent_stadium">Домой</a></li>
         <li>
@@ -57,12 +52,12 @@
     import {firestore} from '~/firebase/app'
 
     export default {
-        name: "dashboard",
-        layout: "dashboard",
+        name: "dashboardUser",
+        layout: "dashboardUser",
         head: {
-            title: "Admin Panel"
+            title: "Client Panel"
         },
-        middleware: 'authenticated',
+        middleware: 'authenticatedUser',
         methods: {
             ...mapActions('modules/user', ['logout']),
             async signout() {

@@ -3,7 +3,8 @@ import Cookies from 'js-cookie'
 
 export const state = () => ({
   uid: null,
-  user: null
+  user: null,
+  admin: '',
 })
 
 export const getters = {
@@ -17,10 +18,24 @@ export const getters = {
     return state.user
   },
 
-  isAuthenticated(state) {
-    return !!state.user && !!state.user.uid
+  admin(state) {
+    return state.admin
+  },
+
+  isAuthenticatedAdmin(state) {
+    if (parseInt(state.admin) === 1 && state.user && state.user.uid){
+       return true;
+    }
+    else return false;
+  },
+
+  isAuthenticatedUser(state) {
+    if (parseInt(state.admin) !== 1 && state.user && state.user.uid){
+      return true
+    }
+    else return false
   }
-}
+};
 
 export const actions = {
 
@@ -29,14 +44,15 @@ export const actions = {
     let token = await firebaseApp.auth().currentUser.getIdToken(true)
     const userInfo = {
       name: user.name,
-      email: user.email,
-      avatar: user.avatar,
+      admin: null,
+      phone_number: user.phone_number,
       uid: user.uid
     }
 
     Cookies.set('access_token', token) // saving token in cookie for server rendering
     await dispatch('setUSER', userInfo)
     await dispatch('saveUID', userInfo.uid)
+    await dispatch('saveADMIN', '')
     console.log('[STORE ACTIONS] - in login, response:', status)
 
   },
@@ -48,6 +64,7 @@ export const actions = {
     Cookies.remove('access_token');
     commit('setUSER', null)
     commit('saveUID', null)
+    commit('saveADMIN', null)
   },
 
   saveUID({commit}, uid) {
@@ -57,6 +74,10 @@ export const actions = {
 
   setUSER({commit}, user) {
     commit('setUSER', user)
+  },
+
+  saveADMIN({commit}, admin) {
+    commit('saveADMIN', admin)
   }
 
 }
@@ -68,6 +89,9 @@ export const mutations = {
   },
   setUSER (state, user) {
     console.log('[STORE MUTATIONS] - setUSER:', user)
-    state.user = user
+    state.user = user;
+  },
+  saveADMIN (state, admin){
+    state.admin = admin;
   }
 }
