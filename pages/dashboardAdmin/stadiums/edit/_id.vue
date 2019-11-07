@@ -253,7 +253,7 @@
                             timeout: 2000
                         });
 
-                        this.$router.push('/dashboard/stadiums')
+                        this.$router.push('/dashboardAdmin/stadiums')
                     })
                 }
             }
