@@ -4,23 +4,42 @@
       <div class="card-header text-center">
         <h4 class="m-0">Запрос на аренду {{ stadium }}</h4>
       </div>
-      <div>
-        <client-only placeholder="Loading...">
-          <FullCalendar
-            ref="fullCalendar"
-            defaultView="timeGridWeek"
-            :header="{
-            left: 'prev,next today',
-            center: 'title',
-            right: 'timeGridWeek,timeGridDay,listWeek'
-          }"
-            :plugins="calendarPlugins"
-            :weekends="calendarWeekends"
-            :events="calendarEvents"
-            @dateClick="handleDateClick"
-          />
-          <comments />
-        </client-only>
+
+      <div class="row">
+        <div class="col-sm-2">
+          <div class="m-15" align="center">
+            Принят/отклонить
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <client-only placeholder="Loading...">
+            <FullCalendar
+              class="m-15"
+              locale="ru"
+              defaultView="timeGridWeek"
+              slotDuration = '00:30:00'
+              slotLabelInterval = '00:30:00'
+              minTime = '06:00:00'
+              max-time = '24:00:00'
+              defaultTimedEventDuration = '01:00:00'
+              eventColor = '#378006'
+              :slotLabelFormat = "{
+                hour: 'numeric',
+                minute: '2-digit',
+                omitZeroMinute: false,
+              }"
+              :header="{
+                left: 'prev,next today',
+                center: 'title',
+                right: 'timeGridWeek,timeGridDay,listWeek'
+              }"
+              :plugins="calendarPlugins"
+              :weekends="calendarWeekends"
+              :events="calendarEvents"
+              @dateClick="handleDateClick"
+            />
+          </client-only>
+        </div>
       </div>
     </div>
   </div>
@@ -33,6 +52,7 @@
     import timeGridPlugin from '@fullcalendar/timegrid'
     import interactionPlugin from '@fullcalendar/interaction'
 
+    import '@fullcalendar/core/locales/ru'
     export default {
         name: "show",
         components: {
@@ -80,6 +100,10 @@
 </script>
 
 <style>
+  .m-15{
+    margin: 15px;
+  }
+
   .content form {
     border-top: none;
   }
