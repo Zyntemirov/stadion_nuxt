@@ -3,7 +3,7 @@
     <div class="card-body">
       <div class="row" style="margin-top: 25px">
         <div v-for="(stadium, key) in stadiums" :key="key" class="col-sm-3 text-center blocks">
-          <nuxt-link :to="'/dashboardAdmin/histories/show/'+key" class="close_icon fa fa-history fa-3x"></nuxt-link>
+          <nuxt-link :to="'/dashboardAdmin/requests/show/'+key" class="close_icon fa fa-calendar fa-3x"></nuxt-link>
           <img :src="'https://firebasestorage.googleapis.com/v0/b/stadion-e9852.appspot.com/o/stadium%2F'+ stadium.stadiumId + '%2Fthumb_small_' + stadium.imgNames[0] + '?alt=media'" @error="imageLoadError({stadiumId: stadium.stadiumId, name:stadium.imgNames[0]})" class="box-shadow b-r-15" style="max-width: 100%">
           <p v-if="stadium.name.length > 25">{{ stadium.name.slice(0,25)}} ...</p>
           <p v-else>{{ stadium.name }}</p>

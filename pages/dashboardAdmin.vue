@@ -39,12 +39,17 @@
         </li>
         <li>
           <nuxt-link to="/dashboardAdmin/stadiums" :class="{activelink: this.$route.name === 'dashboardAdmin-stadiums'}">
-            Мои стадины
+            Мои стадионы
           </nuxt-link>
         </li>
         <li>
           <nuxt-link to="/dashboardAdmin/histories" :class="{activelink: this.$route.name === 'dashboardAdmin-histories'}">
             История заказов
+          </nuxt-link>
+        </li>
+        <li>
+          <nuxt-link to="/dashboardAdmin/requests" :class="{activelink: this.$route.name === 'dashboardAdmin-requests'}">
+            Запрос на аренду
           </nuxt-link>
         </li>
         <li><a href="https://stadion.kg/rent_stadium">Домой</a></li>

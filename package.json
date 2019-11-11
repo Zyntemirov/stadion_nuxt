@@ -14,6 +14,11 @@
     "deploy:now": "now --public && now alias"
   },
   "dependencies": {
+    "@fullcalendar/core": "^4.3.1",
+    "@fullcalendar/daygrid": "^4.3.0",
+    "@fullcalendar/interaction": "^4.3.0",
+    "@fullcalendar/timegrid": "^4.3.0",
+    "@fullcalendar/vue": "^4.3.1",
     "@nuxtjs/axios": "latest",
     "axios": "^0.19.0",
     "body-parser": "latest",
@@ -23,6 +28,7 @@
     "express": "latest",
     "express-session": "latest",
     "firebase": "latest",
+    "fullcalendar-scheduler": "^1.10.0",
     "js-cookie": "latest",
     "jwt-decode": "latest",
     "node-fetch": "^2.5.0",

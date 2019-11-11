@@ -64,7 +64,6 @@
             readHistoriesByStadiumId() {
                 let historiesRef = firebase.database().ref('/books').orderByChild("stadium_id").equalTo(this.$route.params.id);
                 historiesRef.once('value', (snapshot) => {
-                    console.log(Object.keys(snapshot.val())[0], snapshot.val()["-LhiYyp2PufrA-o6rGNw"])
                     for (let i = Object.keys(snapshot.val()).length - 1; i >= 0 ; i--){
                         this.historiesList.push(snapshot.val()[Object.keys(snapshot.val())[i]])
                     }
