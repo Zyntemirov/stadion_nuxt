@@ -21,7 +21,7 @@
                 <ul class="uk-nav uk-dropdown-nav">
                   <a class="dropdown-item"><i class="ti-user m-r-5 m-l-5"></i>Мой профиль</a>
                   <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="javascript:void(0)" id="sign-out"><i
+                  <a class="dropdown-item" @click="signout"><i
                     class="fa fa-power-off m-r-5 m-l-5"></i> Выйти</a>
                 </ul>
               </div>
@@ -53,9 +53,6 @@
           </nuxt-link>
         </li>
         <li><a href="https://stadion.kg/rent_stadium">Домой</a></li>
-        <li>
-          <a @click="signout" style="cursor: pointer">Выход</a>
-        </li>
       </ul>
     </aside>
     <nuxt-child/>

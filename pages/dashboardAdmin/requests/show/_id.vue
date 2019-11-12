@@ -2,13 +2,80 @@
   <div class="content">
     <div class="card">
       <div class="card-header text-center">
-        <h4 class="m-0">Запрос на аренду {{ stadium }}</h4>
+        <h4 class="m-0 bol">Запрос на аренду {{ stadium }}</h4>
       </div>
 
       <div class="row">
         <div class="col-sm-2">
           <div class="m-15" align="center">
-            Принят/отклонить
+            <strong>Принят/отклонить</strong>
+          </div>
+
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div v-for="(request, key) in waitingRequests" v-bind:key="key">
+                  <a :href="'#add-new-event-' + request.book_id" uk-toggle :ref="'closeModal'">
+                    <i class="fa fa-circle text-info m-r-10"></i>{{ request.user_phone }}
+                  </a>
+                  <!-- Modal Add Category -->
+                  <div :id="'add-new-event-'+request.book_id" uk-modal>
+                    <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
+                      <button class="uk-modal-close-outside" type="button" uk-close></button>
+                      <div class="uk-modal-header"><h4 align="center"><strong>Принять</strong> запрос на бронирование
+                      </h4></div>
+
+                      <form style="padding-top: 15px; padding-bottom: 15px ">
+                        <div class="row">
+                          <div class="col-md-6">
+                            <label class="control-label">Имя клиента</label>
+                            <input class="form-control form-white" :value="request.user_name" type="text"
+                                   name="user-name" readonly/>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="control-label">Телефон номер</label>
+                            <input class="form-control form-white" :value="request.user_phone" type="text"
+                                   name="phone-number" readonly/>
+                          </div>
+                        </div>
+                        <div class="row m-t-5 pt-2">
+                          <div class="col-md-6">
+                            <label class="control-label">Дата</label>
+                            <input class="form-control form-white" :value="request.date" type="text"
+                                   name="user-name" readonly/>
+                          </div>
+                          <div class="col-md-6">
+                            <label class="control-label">Время</label>
+                            <input class="form-control form-white"
+                                   :value="'с '+ request.start_time+ ' по ' + request.end_time" type="text"
+                                   name="phone-number" readonly/>
+                          </div>
+                        </div>
+                        <div class="row m-t-5 pt-2">
+                          <div class="col-md-6">
+                            <label class="control-label">Общая сумма</label>
+                            <input class="form-control form-white" :value="request.totalPrice + ' сом'"
+                                   type="text"
+                                   name="user-name" readonly/>
+                          </div>
+                        </div>
+                      </form>
+
+                      <div class="uk-modal-footer" align="center">
+                        <button type="button" @click.prevent="AcceptRequest(request.book_id , request.receiver , request.stadium_id, key)"
+                                class="btn btn-success waves-effect waves-light save-category">Принять
+                        </button>
+                        <button type="button"
+                                @click.prevent="RejectRequest(request.book_id , request.receiver , request.stadium_id)"
+                                class="btn btn-danger waves-effect">Отклонить
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="col-sm-10">
@@ -17,13 +84,13 @@
               class="m-15"
               locale="ru"
               defaultView="timeGridWeek"
-              slotDuration = '00:30:00'
-              slotLabelInterval = '00:30:00'
-              minTime = '06:00:00'
-              max-time = '24:00:00'
-              defaultTimedEventDuration = '01:00:00'
-              eventColor = '#378006'
-              :slotLabelFormat = "{
+              slotDuration='00:30:00'
+              slotLabelInterval='00:30:00'
+              minTime='06:00:00'
+              max-time='24:00:00'
+              defaultTimedEventDuration='01:00:00'
+              eventColor='#378006'
+              :slotLabelFormat="{
                 hour: 'numeric',
                 minute: '2-digit',
                 omitZeroMinute: false,
@@ -35,7 +102,7 @@
               }"
               :plugins="calendarPlugins"
               :weekends="calendarWeekends"
-              :events="calendarEvents"
+              :events="acceptedRequests"
               @dateClick="handleDateClick"
             />
           </client-only>
@@ -53,6 +120,7 @@
     import interactionPlugin from '@fullcalendar/interaction'
 
     import '@fullcalendar/core/locales/ru'
+
     export default {
         name: "show",
         components: {
@@ -61,6 +129,8 @@
         data() {
             return {
                 stadium: '',
+                acceptedRequests: [],
+                waitingRequests: [],
                 calendarPlugins: [ // plugins must be defined in the JS
                     dayGridPlugin,
                     timeGridPlugin,
@@ -75,6 +145,8 @@
         beforeMount: function () {
             this.$nextTick(() => {
                 this.readOneStadium();
+                this.getAcceptedRequests();
+                this.getWaitingRequests();
             })
         },
         methods: {
@@ -88,10 +160,65 @@
                 }
             },
 
+            async AcceptRequest(book_id, admin_id, stadium_id, key){
+                await firebase.database().ref('/books/' + book_id).update({
+                    status: "accepted",
+                    status_stadium_id: 'accepted'+admin_id+stadium_id
+                });
+                this.$uikit.notification('Вы успешно приняли!', {
+                    pos: 'top-center',
+                    status: 'success',
+                    timeout: 3000
+                });
+
+                this.$refs.closeModal[0].click();
+                this.waitingRequests.splice(key,1);
+            },
+
+            async RejectRequest(book_id, admin_id, stadium_id){
+                await firebase.database().ref('/books/' + book_id).update({
+                    status: "reject",
+                    status_stadium_id: 'reject'+admin_id+stadium_id
+                });
+
+                this.$uikit.notification('Вы успешно отменили!', {
+                    pos: 'top-center',
+                    status: 'warning',
+                    timeout: 3000
+                });
+
+                this.$refs.closeModal[0].click();
+                this.waitingRequests.splice(key,1);
+            },
+
             readOneStadium() {
                 let stadiumRef = firebase.database().ref('/stadiums').orderByChild("stadiumId").equalTo(this.$route.params.id);
                 stadiumRef.once('value', (snapshot) => {
                     this.stadium = snapshot.val()[this.$route.params.id].name;
+                })
+            },
+
+            getAcceptedRequests() {
+                let acceptedRef = firebase.database().ref('/books').orderByChild('status_stadium_id').equalTo('accepted' + this.$store.getters['modules/user/uid'] + this.$route.params.id)
+                acceptedRef.once('value', (snapshot) => {
+                    snapshot.forEach((childSnapshot) => {
+                        this.acceptedRequests.push({
+                            title: childSnapshot.val().user_name + ' ' + childSnapshot.val().user_phone,
+                            start: childSnapshot.val().date + ' ' + childSnapshot.val().start_time,
+                            end: childSnapshot.val().date + ' ' + childSnapshot.val().end_time,
+                            editable: false,
+                            selectAllow: false,
+                        });
+                    })
+                })
+            },
+
+            getWaitingRequests() {
+                let waitingRef = firebase.database().ref('/books').orderByChild('status_stadium_id').equalTo('waiting' + this.$store.getters['modules/user/uid'] + this.$route.params.id)
+                waitingRef.once('value', (snapshot) => {
+                    snapshot.forEach((childSnapshot) => {
+                        this.waitingRequests.push(childSnapshot.val());
+                    })
                 })
             }
         },
@@ -100,7 +227,7 @@
 </script>
 
 <style>
-  .m-15{
+  .m-15 {
     margin: 15px;
   }
 
@@ -136,6 +263,7 @@
     height: 9em;
     object-fit: cover;
   }
+
   .no-ssr-placeholder {
     color: #41b883;
   }
