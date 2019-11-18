@@ -13,13 +13,14 @@
 
           <div class="card-body">
             <div class="row">
-              <div class="col-md-12">
+              <div class="col-md-12" ref="modalClose">
                 <div v-for="(request, key) in waitingRequests" v-bind:key="key">
-                  <a :href="'#add-new-event-' + request.book_id" uk-toggle :ref="'closeModal'">
+                  <a :href="'#add-new-event-' + request.book_id" uk-toggle @click="showModal(true)">
                     <i class="fa fa-circle text-info m-r-10"></i>{{ request.user_phone }}
                   </a>
+
                   <!-- Modal Add Category -->
-                  <div :id="'add-new-event-'+request.book_id" uk-modal>
+                  <div :id="'add-new-event-'+request.book_id" uk-modal v-if="currentModal">
                     <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
                       <button class="uk-modal-close-outside" type="button" uk-close></button>
                       <div class="uk-modal-header"><h4 align="center"><strong>Принять</strong> запрос на бронирование
@@ -62,7 +63,7 @@
                       </form>
 
                       <div class="uk-modal-footer" align="center">
-                        <button type="button" @click.prevent="AcceptRequest(request.book_id , request.receiver , request.stadium_id, key)"
+                        <button type="button" @click="AcceptRequest(request.book_id , request.receiver , request.stadium_id, key)"
                                 class="btn btn-success waves-effect waves-light save-category">Принять
                         </button>
                         <button type="button"
@@ -139,7 +140,9 @@
                 calendarWeekends: true,
                 calendarEvents: [ // initial event data
                     {title: 'Event Now', start: new Date()}
-                ]
+                ],
+
+                currentModal: false
             }
         },
         beforeMount: function () {
@@ -160,19 +163,28 @@
                 }
             },
 
-            async AcceptRequest(book_id, admin_id, stadium_id, key){
+            async AcceptRequest(book_id, admin_id, stadium_id, index){
                 await firebase.database().ref('/books/' + book_id).update({
                     status: "accepted",
                     status_stadium_id: 'accepted'+admin_id+stadium_id
                 });
-                this.$uikit.notification('Вы успешно приняли!', {
+
+                await this.$uikit.notification('Вы успешно приняли!', {
                     pos: 'top-center',
                     status: 'success',
                     timeout: 3000
                 });
 
-                this.$refs.closeModal[0].click();
-                this.waitingRequests.splice(key,1);
+                this.showModal(false);
+
+                await this.acceptedRequests.push({
+                    title: this.waitingRequests[index].user_name + ' ' + this.waitingRequests[index].user_name,
+                    start: this.waitingRequests[index].date + ' ' + this.waitingRequests[index].start_time,
+                    end: this.waitingRequests[index].date + ' ' + this.waitingRequests[index].end_time,
+                    editable: false,
+                    selectAllow: false,
+                });
+                await this.waitingRequests.splice(index,1);
             },
 
             async RejectRequest(book_id, admin_id, stadium_id){
@@ -220,7 +232,11 @@
                         this.waitingRequests.push(childSnapshot.val());
                     })
                 })
-            }
+            },
+
+            showModal(flag){
+                this.currentModal = flag;
+            },
         },
     }
 
