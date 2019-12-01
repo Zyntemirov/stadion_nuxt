@@ -189,8 +189,8 @@
 
             async RejectRequest(book_id, admin_id, stadium_id){
                 await firebase.database().ref('/books/' + book_id).update({
-                    status: "reject",
-                    status_stadium_id: 'reject'+admin_id+stadium_id
+                    status: "rejected",
+                    status_stadium_id: 'rejected'+admin_id+stadium_id
                 });
 
                 this.$uikit.notification('Вы успешно отменили!', {
@@ -199,7 +199,8 @@
                     timeout: 3000
                 });
 
-                this.$refs.closeModal[0].click();
+                this.showModal(false);
+
                 this.waitingRequests.splice(key,1);
             },
 
