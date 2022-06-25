@@ -31,7 +31,7 @@
     "fullcalendar-scheduler": "^1.10.0",
     "js-cookie": "latest",
     "jwt-decode": "latest",
-    "node-fetch": "^2.5.0",
+    "node-fetch": "^2.6.7",
     "nuxt": "latest",
     "uikit": "^3.1.4",
     "vue": "^2.6.10",
